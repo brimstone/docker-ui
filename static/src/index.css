@@ -1,0 +1,33 @@
+body {
+	height: 100%;
+	width: 100%;
+	position: absolute;
+}
+
+.container-fluid {
+	padding: 0px;
+	height: 100%;
+}
+
+.sub-menu {
+	margin-left: 10px;
+}
+
+.container-fluid > div {
+	padding: 0;
+}
+
+.navbar-header {
+	width: 100%;
+}
+
+@media (min-width: 992px) {
+	.sidebar {
+		height: 100%;
+	}
+	.sidebar > .navbar {
+		height: 100%;
+	}
+}
+
+
