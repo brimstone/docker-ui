@@ -10,6 +10,7 @@
 	<script src="//ajax.googleapis.com/ajax/libs/angularjs/1.2.16/angular-route.min.js"></script>
 	<script src="ui-bootstrap-tpls-0.12.0.min.js"></script>
 	<script src="app.js"></script>
+	<script src="docker.js"></script>
 
 	<link href="//netdna.bootstrapcdn.com/bootstrap/3.1.1/css/bootstrap.min.css" rel="stylesheet"/>
 	<link href="index.css" rel="stylesheet"/>
@@ -31,15 +32,15 @@
 				<input type="text" class="form-control" placeholder="Search">
 				<ul class="nav nav-stacked" ng-repeat="server in servers">
 					<li>
-						<a href="#{{server.name}}">{{server.name}}</a>
+						<a href="#{{server.Id}}">{{server.Id}}</a>
 					</li>
 					<li>
 						<ul class="nav nav-stacked sub-menu">
 							<li>
-								<a href="#{{server.name}}/new">New...</a>
+								<a href="#{{server.Id}}/new">New...</a>
 							</li>
 							<li ng-repeat="container in server.containers">
-								<a href="#{{server.name}}/{{container.Config.Id}}">{{container.Config.Names[0]}}</a>
+								<a href="#{{server.Id}}/{{container.Id}}">{{container.Names[0]}}</a>
 							</li>
 						</ul>
 					</li>

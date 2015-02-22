@@ -16,30 +16,18 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 	})
 }])
 .service('docker', function(){
-	this.servers = [
-		{
-			"name": "ServerA",
-			"containers": [
-				{"Config": {"Id": "000", "Names": ["/container 1"]}},
-				{"Config": {"Id": "000", "Names": ["/container 2"]}}
-			],
-			"images": [
-				{"Config": {"Id": "010", "RepoTags": ["brimstone/ubuntu:14.04"]}}
-			]
-		},
-		{
-			"name": "ServerB",
-			"containers": [
-				{"Config": {"Id": "100", "Names": ["/container 3"]}}
-			],
-			"images": [
-				{"Config": {"Id": "110", "RepoTags": ["brimstone/ubuntu:14.04"]}}
-			]
-		}
-	]
-	console.log("Creating service")
+	// http://clintberry.com/2013/angular-js-websocket-service/
+
+	me = this
+	Docker.callback = function(){
+		me.servers = Docker.servers
+		me.callback()
+	}
+
+	Docker.UpdateServerList()
+	this.servers = []
+
 	this.status = function() {
-		console.log("Returning status")
 		return "Status!"
 	}
 })
@@ -49,7 +37,11 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
     $scope.menuCollapsed = true;
 	$scope.consoleAvailable = false;
 
-	$scope.servers = docker.servers
+	docker.callback = function(){
+		$scope.servers = docker.servers
+		console.log($scope.servers)
+		$scope.$apply()
+	}
 
 	$scope.server = docker.servers[0]
 
