@@ -8,7 +8,7 @@ var Docker = (function(){
 	}
 
 	function updateServer(server) {
-		atomic.get("/containers/json?server=" + server)
+		atomic.get("/containers/json?all=1&server=" + server)
 		.success(function(data, xhr){
 			i = findElementByAttribute(me.servers, "Id", server)
 			me.servers[i].containers = data
@@ -46,17 +46,19 @@ var Docker = (function(){
 				// if we don't have a server by this name, add it
 				if(findElementByAttribute(me.servers, "Id", data[s].Id) == -1) {
 					me.servers[s] = data[s]
-					updateServer(data[s].Id)
 				}
 			}
-/*			// Loop through each of our known servers
+			// Loop through each of our known servers
 			for(s = 0; s < me.servers.length; s++) {
 				// if we don't have this in our xhr data, remove it
-				if(data.indexOf(me.servers[s].name) == -1) {
+				if(findElementByAttribute(data, "Id", me.servers[s].Id) == -1) {
 					me.servers.splice(s,1)
 				}
 			}
-*/
+			// update all of our servers now
+			for(s = 0; s < me.servers.length; s++) {
+				updateServer(me.servers[s].Id)
+			}
 		})
 		// If we can't, assume we only have one
 		// This usually means we're really talking to a stock docker server
@@ -66,6 +68,7 @@ var Docker = (function(){
 	}
 
 	//updateServerList()
+	setInterval(me.UpdateServerList, 1000)
 
 	return me;
 }());

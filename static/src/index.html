@@ -30,17 +30,17 @@
 
 			<div class="collapse navbar-collapse" collapse="menuCollapsed">
 				<input type="text" class="form-control" placeholder="Search">
-				<ul class="nav nav-stacked" ng-repeat="server in servers">
-					<li>
-						<a href="#{{server.Id}}">{{server.Id}}</a>
+				<ul class="nav nav-stacked" ng-repeat="s in servers">
+					<li ng-class="{active: s.Id == server.Id}">
+						<a href="#{{s.Id}}">{{s.Id}}</a>
 					</li>
 					<li>
 						<ul class="nav nav-stacked sub-menu">
 							<li>
-								<a href="#{{server.Id}}/new">New...</a>
+								<a href="#{{s.Id}}/new">New...</a>
 							</li>
-							<li ng-repeat="container in server.containers">
-								<a href="#{{server.Id}}/{{container.Id}}">{{container.Names[0]}}</a>
+							<li ng-repeat="c in s.containers" ng-class="{active: c.Id == container.Id}">
+								<a href="#{{s.Id}}/{{c.Id}}">{{c.Names[0]}}</a>
 							</li>
 						</ul>
 					</li>
@@ -57,6 +57,8 @@
 					<form>
 						<div class="col-xs-12 col-md-6 col-lg-4">
 							<div class="form-group">
+								<label for="containerId">Id</label>
+								<input  class="form-control" id="containerId" placeholder="Id" ng-model="container.Id" disabled>
 								<label for="containerName">Name</label>
 								<input  class="form-control" id="containerName" placeholder="Name" ng-model="container.Names[0]">
 								<label for="containerImage">Image</label>

@@ -27,7 +27,7 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 	Docker.UpdateServerList()
 	this.servers = []
 })
-.controller('Main', function ($scope, $routeParams, docker) {
+.controller('Main', function ($scope, $routeParams, docker, $location) {
 
 	
     $scope.menuCollapsed = true;
@@ -35,28 +35,32 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 	$scope.container = {"Name": [], "Image": "Test"}
 
 	function findContainer() {
-		console.log($routeParams)
+		var found = false
 		// find our container object, if we have it
 		if ($routeParams.containerId) {
-			console.log("Hunting for", $routeParams.serverId, $routeParams.containerId)
 			if ($routeParams.containerId == "new") {
 				console.log("Setting new container bits.")
+				found = true
+				$location.url("/")
 			}
 			else {
 				for(s = 0; s < $scope.servers.length; s++) {
 					if ($scope.servers[s].Id != $routeParams.serverId) {
 						continue;
 					}
+					$scope.server = $scope.servers[s]
 					for(c = 0; c < $scope.servers[s].containers.length; c++) {
 						if ($scope.servers[s].containers[c].Id != $routeParams.containerId) {
-							console.log($scope.servers[s].containers[c].Id, "is not", $routeParams.containerId)
 							continue;
 						}
 						$scope.container = $scope.servers[s].containers[c]
-						console.log("Found container", $scope.container)
+						found = true
 					}
 				}
 			}
+		}
+		if (!found) {
+			$location.url("/")
 		}
 	}
 
@@ -67,6 +71,7 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 	}
 
 	$scope.servers = docker.servers
+	findContainer()
 })
 
 

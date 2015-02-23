@@ -21,6 +21,11 @@ body {
 	width: 100%;
 }
 
+.nav-stacked > li.active > a {
+    background-color: #428bca;
+    color: #fff;
+}
+
 @media (min-width: 992px) {
 	.sidebar {
 		height: 100%;
