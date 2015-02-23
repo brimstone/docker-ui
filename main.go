@@ -15,7 +15,7 @@ var proxies []Proxy.Proxy
 func handlerServers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
 	servers := make([]map[string]string, 0)
-	servers = append(servers, map[string]string{"Id": "noranti"})
+	//servers = append(servers, map[string]string{"Id": "noranti"})
 	servers = append(servers, map[string]string{"Id": "liani"})
 	out, _ := json.Marshal(servers)
 	fmt.Fprint(w, string(out))
