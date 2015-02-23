@@ -26,26 +26,48 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 
 	Docker.UpdateServerList()
 	this.servers = []
-
-	this.status = function() {
-		return "Status!"
-	}
 })
 .controller('Main', function ($scope, $routeParams, docker) {
 
 	
     $scope.menuCollapsed = true;
 	$scope.consoleAvailable = false;
+	$scope.container = {"Name": [], "Image": "Test"}
+
+	function findContainer() {
+		console.log($routeParams)
+		// find our container object, if we have it
+		if ($routeParams.containerId) {
+			console.log("Hunting for", $routeParams.serverId, $routeParams.containerId)
+			if ($routeParams.containerId == "new") {
+				console.log("Setting new container bits.")
+			}
+			else {
+				for(s = 0; s < $scope.servers.length; s++) {
+					if ($scope.servers[s].Id != $routeParams.serverId) {
+						continue;
+					}
+					for(c = 0; c < $scope.servers[s].containers.length; c++) {
+						if ($scope.servers[s].containers[c].Id != $routeParams.containerId) {
+							console.log($scope.servers[s].containers[c].Id, "is not", $routeParams.containerId)
+							continue;
+						}
+						$scope.container = $scope.servers[s].containers[c]
+						console.log("Found container", $scope.container)
+					}
+				}
+			}
+		}
+	}
 
 	docker.callback = function(){
+		findContainer()
 		$scope.servers = docker.servers
-		console.log($scope.servers)
 		$scope.$apply()
 	}
 
-	$scope.server = docker.servers[0]
-
-	$scope.findme = $routeParams.serverId
-	$scope.docker = docker.status()
+	$scope.servers = docker.servers
 })
 
+
+// angular.element($('#containerName')).scope().servers[1].containers

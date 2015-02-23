@@ -58,14 +58,10 @@
 						<div class="col-xs-12 col-md-6 col-lg-4">
 							<div class="form-group">
 								<label for="containerName">Name</label>
-								<input type="email" class="form-control" id="containerName" placeholder="Name">
+								<input  class="form-control" id="containerName" placeholder="Name" ng-model="container.Names[0]">
+								<label for="containerImage">Image</label>
+								<input class="form-control" id="containerImage" placeholder="Image" ng-model="container.Image">
 							</div>
-						</div>
-						<div class="col-xs-12 col-md-6 col-lg-4">
-							findme: {{findme}}
-						</div>
-						<div class="col-xs-12 col-md-6 col-lg-4">
-							docker: {{docker}}
 						</div>
 						<div class="col-xs-12 col-md-6 col-lg-4">
 							<button type="button" class="btn btn-danger">Stop</button>
