@@ -8,4 +8,4 @@ big: *.go static/build.go
 	go build
 
 static/build.go: static/src
-	cd static; ${GOPATH}/bin/go-bindata -pkg=static -o=build.go -nomemcopy=true src
+	cd static; ${GOPATH}/bin/go-bindata -pkg=static -o=build.go -nomemcopy=true src src/vendor
