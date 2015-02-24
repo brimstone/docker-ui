@@ -54,6 +54,7 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 							continue;
 						}
 						$scope.container = $scope.servers[s].containers[c]
+						$scope.containerImage = findImageById($scope.servers[s].images, $scope.container.Image).RepoTags[0]
 						found = true
 					}
 				}
@@ -61,6 +62,14 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 		}
 		if (!found) {
 			$location.url("/")
+		}
+	}
+
+	function findImageById(images, image){
+		for(i = 0; i < images.length; i++){
+			if (images[i].Id == image) {
+				return images[i]
+			}
 		}
 	}
 

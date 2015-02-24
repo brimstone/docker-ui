@@ -31,7 +31,7 @@ var Docker = (function(){
 		atomic.get("/images/json?server=" + server)
 		.success(function(images, xhr){
 			i = findElementByAttribute(me.servers, "Id", server)
-			me.servers[i].images = []
+			me.servers[i].images = images
 			if (me.callback != null) {
 				clearTimeout(callbackTimer)
 				callbackTimer = setTimeout(me.callback, 100)
