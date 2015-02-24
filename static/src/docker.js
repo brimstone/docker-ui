@@ -86,6 +86,22 @@ var Docker = (function(){
 		})
 	}
 
+	me.StopContainer = function(serverId, containerId){
+		atomic.post("/containers/" + containerId + "/stop?t=5&server=" + serverId)
+	}
+	me.StartContainer = function(serverId, containerId){
+		atomic.post("/containers/" + containerId + "/start?server=" + serverId)
+	}
+	me.DeleteContainer = function(serverId, containerId){
+		atomic.post("/containers/" + containerId + "/stop?t=5&server=" + serverId)
+		.success(function(){
+			atomic.delete("/containers/" + containerId + "?v=1&server=" + serverId)
+		})
+		.error(function(){
+		atomic.delete("/containers/" + containerId + "?v=1&server=" + serverId)
+		})
+	}
+
 	//me.UpdateServerList()
 	setInterval(me.UpdateServerList, 2000)
 

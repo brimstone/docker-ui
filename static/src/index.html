@@ -65,9 +65,17 @@
 								<input class="form-control" id="containerImage" placeholder="Image" ng-model="containerImage">
 							</div>
 						</div>
-						<div class="col-xs-12 col-md-6 col-lg-4">
-							<button type="button" class="btn btn-danger">Stop</button>
-							<button type="button" class="btn btn-danger">Restart</button>
+						<div class="col-xs-12 col-md-12 col-lg-12">
+							<button type="button" class="btn btn-success" ng-click="startContainer()" ng-disabled="container.State.Running">
+								Start
+							</button>
+							<button type="button" class="btn btn-danger" ng-click="stopContainer()" ng-disabled="!container.State.Running">
+								Stop
+							</button>
+							<button type="button" class="btn btn-danger" ng-disabled="!container.State.Running">
+								Restart
+							</button>
+							<button type="button" class="btn btn-danger" ng-click="deleteContainer()">Delete</button>
 						</div>
 					</form>
 				</div>

@@ -73,6 +73,18 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 		}
 	}
 
+	$scope.stopContainer = function (){
+		Docker.StopContainer($scope.server.Id, $scope.container.Id)
+	}
+
+	$scope.deleteContainer = function (){
+		Docker.DeleteContainer($scope.server.Id, $scope.container.Id)
+	}
+
+	$scope.startContainer = function (){
+		Docker.StartContainer($scope.server.Id, $scope.container.Id)
+	}
+
 	docker.callback = function(){
 		findContainer()
 		$scope.servers = docker.servers
