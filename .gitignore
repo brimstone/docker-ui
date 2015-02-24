@@ -1,2 +1,3 @@
 docker-ui
 static/build.go
+*.swp
