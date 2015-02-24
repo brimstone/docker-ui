@@ -7,22 +7,34 @@ var Docker = (function(){
 		callback: null
 	}
 
+	var callbackTimer;
+
 	function updateServer(server) {
 		atomic.get("/containers/json?all=1&server=" + server)
-		.success(function(data, xhr){
+		.success(function(containers, xhr){
 			i = findElementByAttribute(me.servers, "Id", server)
-			me.servers[i].containers = data
-			if (me.callback != null) {
-				me.callback()
+			me.servers[i].containers = []
+
+			for(c = 0; c < containers.length; c++) {
+				atomic.get("/containers/" + containers[c].Id + "/json")
+				.success(function(data, xhr){
+					me.servers[i].containers.push(data)
+					if (me.callback != null) {
+						clearTimeout(callbackTimer)
+						callbackTimer = setTimeout(me.callback, 100)
+					}
+				})
 			}
+
 		})
 
 		atomic.get("/images/json?server=" + server)
-		.success(function(data, xhr){
+		.success(function(images, xhr){
 			i = findElementByAttribute(me.servers, "Id", server)
-			me.servers[i].images = data
+			me.servers[i].images = []
 			if (me.callback != null) {
-				me.callback()
+				clearTimeout(callbackTimer)
+				callbackTimer = setTimeout(me.callback, 100)
 			}
 		})
 
@@ -67,7 +79,7 @@ var Docker = (function(){
 		})
 	}
 
-	//updateServerList()
+	//me.UpdateServerList()
 	setInterval(me.UpdateServerList, 1000)
 
 	return me;
