@@ -19,6 +19,13 @@ var Docker = (function(){
 				atomic.get("/containers/" + containers[c].Id + "/json")
 				.success(function(data, xhr){
 					me.servers[i].containers.push(data)
+					me.servers[i].containers.sort(function(a, b){
+						if (a.Id > b.Id)
+							return 1
+						if (a.Id < b.Id)
+							return -1
+						return 0
+					})
 					if (me.callback != null) {
 						clearTimeout(callbackTimer)
 						callbackTimer = setTimeout(me.callback, 100)
@@ -28,7 +35,7 @@ var Docker = (function(){
 
 		})
 
-		atomic.get("/images/json?server=" + server)
+		atomic.get("/images/json?all=1&server=" + server)
 		.success(function(images, xhr){
 			i = findElementByAttribute(me.servers, "Id", server)
 			me.servers[i].images = images
@@ -80,7 +87,7 @@ var Docker = (function(){
 	}
 
 	//me.UpdateServerList()
-	setInterval(me.UpdateServerList, 1000)
+	setInterval(me.UpdateServerList, 2000)
 
 	return me;
 }());
