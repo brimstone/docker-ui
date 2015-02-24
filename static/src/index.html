@@ -50,7 +50,7 @@
 
 	</div><!--/end left column-->
 
-	<div class="col-md-10">
+	<div class="col-md-10" ng-show="container.Id && server.Id">
 		<tabset>
 			<tab heading="Config">
 				<div container="container-fluid">
@@ -87,6 +87,51 @@
 				{{tab.content}}
 			</tab-->
 		</tabset>
+	</div>
+	<div class="col-md-10" ng-show="server.Id && !container.Id">
+		<tabset>
+			<tab heading="Server">
+				<div container="container-fluid">
+					<form>
+						<div class="col-xs-12 col-md-6 col-lg-4">
+							<div class="form-group">
+								<label for="port">Port</label>
+								<input  class="form-control" id="port" placeholder="Port" value="8080">
+							</div>
+						</div>
+					</form>
+				</div>
+			</tab>
+			<tab heading="Containers">
+				<table class="table table-striped">
+					<tr>
+						<th>Container ID</th>
+						<th>Image</th>
+						<th>Command</th>
+						<th>Created</th>
+						<th>Status</th>
+						<th>Ports</th>
+						<th>Names</th>
+					</tr>
+					<tr ng-repeat="container in server.containers">
+						<td>{{container.Id}}</td>
+						<td>{{findImageById(server.images, container.Image)}}</td>
+						<td>{{container.Config.Cmd.join(" ")}}</td>
+						<td>{{container.Created}}</td>
+						<td>TODO</td>
+						<td>TODO</td>
+						<td>{{container.Name}}</td>
+					</tr>
+				</table>
+			</tab>
+			<tab heading="Images" disabled="true">
+			</tab>
+			<tab heading="Users" disabled="true">
+			</tab>
+		</tabset>
+	</div>
+	<div class="col-md-10" ng-show="!container.Id && !server.Id">
+		Select a container from the left.
 	</div>
 </div>
 	</script>

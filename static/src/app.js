@@ -32,7 +32,7 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 	
     $scope.menuCollapsed = true;
 	$scope.consoleAvailable = false;
-	$scope.container = {"Name": [], "Image": "Test"}
+	$scope.container = {}
 
 	function findContainer() {
 		var found = false
@@ -59,9 +59,17 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 					}
 				}
 			}
+			if (!found) {
+				$location.url("/")
+			}
 		}
-		if (!found) {
-			$location.url("/")
+		else if ($routeParams.serverId) {
+			for(s = 0; s < $scope.servers.length; s++) {
+				if ($scope.servers[s].Id != $routeParams.serverId) {
+					continue;
+				}
+				$scope.server = $scope.servers[s]
+			}
 		}
 	}
 
@@ -71,6 +79,7 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 				return images[i]
 			}
 		}
+		return "NOT FOUND"
 	}
 
 	$scope.stopContainer = function (){
