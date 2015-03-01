@@ -16,7 +16,7 @@ var Docker = (function(){
 			me.servers[i].containers = []
 
 			for(c = 0; c < containers.length; c++) {
-				atomic.get("/containers/" + containers[c].Id + "/json")
+				atomic.get("/containers/" + containers[c].Id + "/json?server=" + server)
 				.success(function(data, xhr){
 					me.servers[i].containers.push(data)
 					me.servers[i].containers.sort(function(a, b){
