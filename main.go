@@ -7,7 +7,6 @@ import (
 	Proxy "github.com/brimstone/go-proxy"
 	"github.com/elazarl/go-bindata-assetfs"
 	"net/http"
-	"net/url"
 )
 
 var proxies []Proxy.Proxy
@@ -21,29 +20,35 @@ func handlerServers(w http.ResponseWriter, r *http.Request) {
 	fmt.Fprint(w, string(out))
 }
 
-func handlerProxy(w http.ResponseWriter, r *http.Request) {
-	proxy := proxies[0]
-	o, _ := url.ParseRequestURI(r.RequestURI)
-	values := o.Query()
-	if values["server"] != nil {
-		// [todo] - Find proxy by name
-		fmt.Println("TODO Find proxy by name")
-	}
-	proxy.Handle(w, r)
-}
-
 func main() {
 
-	proxy, _ := Proxy.New("unix:///var/run/docker.sock")
-	proxies = append(proxies, *proxy)
-
+	// setup asset handler
 	http.Handle("/",
 		http.FileServer(
 			&assetfs.AssetFS{Asset: static.Asset, AssetDir: static.AssetDir, Prefix: "src"}))
-	http.HandleFunc("/servers/json", handlerServers)
-	http.HandleFunc("/containers/", handlerProxy)
-	http.HandleFunc("/images/", handlerProxy)
 
-	fmt.Println("Starting server")
-	http.ListenAndServe(":8080", nil)
+	http.HandleFunc("/servers/json", handlerServers)
+
+	fmt.Println("Starting http server")
+	go http.ListenAndServe(":8079", nil)
+
+	//proxy, _ := Proxy.New("unix:///var/run/docker.sock")
+	proxy, _ := Proxy.New()
+	proxies = append(proxies, *proxy)
+
+	// If it's / specifically, handle it with the asset server
+	proxy.Handle("^/servers", "http://localhost:8079")
+
+	// Handle requests directed at a particular server
+	//proxy.Handle("server=liani$", "unix:///var/run/docker.sock")
+	proxy.Handle("server=liani$", "unix:///tmp/proxysocket.sock")
+
+	// Send docker looking like urls to our first socket
+	proxy.Handle("/v", "unix:///tmp/proxysocket.sock")
+
+	// everything else goes to the asset server
+	proxy.Handle("/", "http://localhost:8079")
+
+	proxy.ListenAndServe(":8080")
+
 }
