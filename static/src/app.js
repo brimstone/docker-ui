@@ -15,21 +15,28 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 		redirectTo: '/'
 	})
 }])
-.service('docker', function(){
+.service('docker', function($rootScope){
 	// http://clintberry.com/2013/angular-js-websocket-service/
 
+	var callbacks = []
+
 	me = this
-	Docker.callback = function(){
+
+
+	var callback = function(){
 		me.servers = Docker.servers
-		me.callback()
+		$rootScope.$emit("containerUpdate", "emitted data")
 	}
 
+
+	Docker.subscribe(callback)
+
 	Docker.UpdateServerList()
+
 	this.servers = []
 })
-.controller('Main', function ($scope, $routeParams, docker, $location) {
+.controller('Main', function ($scope, $routeParams, docker, $location, $rootScope) {
 
-	
     $scope.menuCollapsed = true;
 	$scope.consoleAvailable = false;
 	$scope.container = {}
@@ -94,11 +101,15 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 		Docker.StartContainer($scope.server.Id, $scope.container.Id)
 	}
 
-	docker.callback = function(){
-		findContainer()
+	// http://toddmotto.com/all-about-angulars-emit-broadcast-on-publish-subscribing/
+	var myListener = $rootScope.$on('containerUpdate', function (event, data) {
 		$scope.servers = docker.servers
+		findContainer()
 		$scope.$apply()
-	}
+	});
+
+	$scope.$on('$destroy', myListener);
+
 
 	$scope.servers = docker.servers
 	findContainer()

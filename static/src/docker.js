@@ -3,11 +3,30 @@ var Docker = (function(){
 	!function(a,b){"function"==typeof define&&define.amd?define(b):"object"==typeof exports?module.exports=b:a.atomic=b(a)}(this,function(a){"use strict";var b={},c=function(a){var b;try{b=JSON.parse(a.responseText)}catch(c){b=a.responseText}return[b,a]},d=function(b,d,e){var f={success:function(){},error:function(){}},g=a.XMLHttpRequest||ActiveXObject,h=new g("MSXML2.XMLHTTP.3.0");return h.open(b,d,!0),h.setRequestHeader("Content-type","application/x-www-form-urlencoded"),h.onreadystatechange=function(){4===h.readyState&&(200===h.status?f.success.apply(f,c(h)):f.error.apply(f,c(h)))},h.send(e),{success:function(a){return f.success=a,f},error:function(a){return f.error=a,f}}};return b.get=function(a){return d("GET",a)},b.put=function(a,b){return d("PUT",a,b)},b.post=function(a,b){return d("POST",a,b)},b["delete"]=function(a){return d("DELETE",a)},b});
 
 	var me = {
-		servers: [],
-		callback: null
+		servers: []
 	}
 
+	var callbacks = []
+
 	var callbackTimer;
+
+	me.subscribe = function(callback) {
+		callbacks.push(callback)
+	}
+
+	me.unsubscribe = function(callback) {
+		// find the callback and remove it
+		var index = callbacks.indexOf(callback)
+		if (index > -1) {
+			callbacks.splice(index, 1)
+		}
+	}
+
+	function fireCallbacks() {
+		for(c = 0; c < callbacks.length; c++) {
+			callbacks[c]()
+		}
+	}
 
 	function updateServer(server) {
 		atomic.get("/containers/json?all=1&server=" + server)
@@ -26,10 +45,8 @@ var Docker = (function(){
 							return -1
 						return 0
 					})
-					if (me.callback != null) {
-						clearTimeout(callbackTimer)
-						callbackTimer = setTimeout(me.callback, 100)
-					}
+					clearTimeout(callbackTimer)
+					callbackTimer = setTimeout(fireCallbacks, 100)
 				})
 			}
 
@@ -39,10 +56,8 @@ var Docker = (function(){
 		.success(function(images, xhr){
 			i = findElementByAttribute(me.servers, "Id", server)
 			me.servers[i].images = images
-			if (me.callback != null) {
-				clearTimeout(callbackTimer)
-				callbackTimer = setTimeout(me.callback, 100)
-			}
+			clearTimeout(callbackTimer)
+			callbackTimer = setTimeout(fireCallbacks, 100)
 		})
 
 	}
