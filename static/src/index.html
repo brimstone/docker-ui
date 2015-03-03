@@ -65,6 +65,12 @@
 								<input class="form-control" id="containerImage" placeholder="Image" ng-model="containerImage">
 							</div>
 						</div>
+						<div class="col-xs-12 col-md-6 col-lg-4">
+							<div class="form-group">
+								<label for="containerIp">IP Address</label>
+								<input  class="form-control" id="containerIp" placeholder="Ip" ng-model="container.NetworkSettings.IPAddress" disabled>
+							</div>
+						</div>
 						<div class="col-xs-12 col-md-12 col-lg-12">
 							<button type="button" class="btn btn-success" ng-click="startContainer()" ng-disabled="container.State.Running">
 								Start
