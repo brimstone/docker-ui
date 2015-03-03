@@ -1,6 +1,6 @@
 var Docker = (function(){
 	// stolen from https://github.com/toddmotto/atomic	
-	!function(a,b){"function"==typeof define&&define.amd?define(b):"object"==typeof exports?module.exports=b:a.atomic=b(a)}(this,function(a){"use strict";var b={},c=function(a){var b;try{b=JSON.parse(a.responseText)}catch(c){b=a.responseText}return[b,a]},d=function(b,d,e){var f={success:function(){},error:function(){}},g=a.XMLHttpRequest||ActiveXObject,h=new g("MSXML2.XMLHTTP.3.0");return h.open(b,d,!0),h.setRequestHeader("Content-type","application/x-www-form-urlencoded"),h.onreadystatechange=function(){4===h.readyState&&(200===h.status?f.success.apply(f,c(h)):f.error.apply(f,c(h)))},h.send(e),{success:function(a){return f.success=a,f},error:function(a){return f.error=a,f}}};return b.get=function(a){return d("GET",a)},b.put=function(a,b){return d("PUT",a,b)},b.post=function(a,b){return d("POST",a,b)},b["delete"]=function(a){return d("DELETE",a)},b});
+	!function(a,b){"function"==typeof define&&define.amd?define(b):"object"==typeof exports?module.exports=b:a.atomic=b(a)}(this,function(a){"use strict";var b={},c=function(a){var b;try{b=JSON.parse(a.responseText)}catch(c){b=a.responseText}return[b,a]},d=function(b,d,e){var f={success:function(){},error:function(){}},g=a.XMLHttpRequest||ActiveXObject,h=new g("MSXML2.XMLHTTP.3.0");h.open(b,d,!0),h.setRequestHeader("Content-type","application/x-www-form-urlencoded"),h.onreadystatechange=function(){4===h.readyState&&(h.status>=200&&h.status<300?f.success.apply(f,c(h)):f.error.apply(f,c(h)))},h.send(e);var i={success:function(a){return f.success=a,i},error:function(a){return f.error=a,i}};return i};return b.get=function(a){return d("GET",a)},b.put=function(a,b){return d("PUT",a,b)},b.post=function(a,b){return d("POST",a,b)},b["delete"]=function(a){return d("DELETE",a)},b});
 
 	var me = {
 		servers: []
@@ -110,10 +110,12 @@ var Docker = (function(){
 	me.DeleteContainer = function(serverId, containerId){
 		atomic.post("/containers/" + containerId + "/stop?t=5&server=" + serverId)
 		.success(function(){
+			console.log("Delete Container success")
 			atomic.delete("/containers/" + containerId + "?v=1&server=" + serverId)
 		})
 		.error(function(){
-		atomic.delete("/containers/" + containerId + "?v=1&server=" + serverId)
+			console.log("Delete Container error")
+			atomic.delete("/containers/" + containerId + "?v=1&server=" + serverId)
 		})
 	}
 
