@@ -2,7 +2,7 @@ FROM brimstone/ubuntu:14.04
 
 EXPOSE 8080
 
-RUN package golang git make \
+RUN package golang git make mercurial \
  && cd /tmp \
  && export GOPATH=/tmp/go \
  && export PATH=$PATH:$GOPATH/bin \
