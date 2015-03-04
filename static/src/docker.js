@@ -28,28 +28,39 @@ var Docker = (function(){
 		}
 	}
 
+	function updateContainer(server, containerId) {
+		atomic.get("/containers/" + containerId + "/json?server=" + server)
+		.success(function(data, xhr){
+			var s = findElementByAttribute(me.servers, "Id", server)
+			var c = findElementByAttribute(me.servers[s].containers, "Id", containerId)
+			if ( c == -1 ) {
+				me.servers[s].containers.push(data)
+				me.servers[s].containers.sort(function(a, b){
+					if (a.Id > b.Id)
+						return 1
+					if (a.Id < b.Id)
+						return -1
+					return 0
+				})
+			}
+			else {
+				me.servers[s].containers[c] = data
+			}
+			clearTimeout(callbackTimer)
+			callbackTimer = setTimeout(fireCallbacks, 100)
+		})
+	}
+
 	function updateServer(server) {
 		atomic.get("/containers/json?all=1&server=" + server)
 		.success(function(containers, xhr){
-			i = findElementByAttribute(me.servers, "Id", server)
+			var i = findElementByAttribute(me.servers, "Id", server)
 			me.servers[i].containers = []
 			// willing to bet there's a closure problem here
 			me.servers[i].websocket = newwebsocket(server)
 
 			for(c = 0; c < containers.length; c++) {
-				atomic.get("/containers/" + containers[c].Id + "/json?server=" + server)
-				.success(function(data, xhr){
-					me.servers[i].containers.push(data)
-					me.servers[i].containers.sort(function(a, b){
-						if (a.Id > b.Id)
-							return 1
-						if (a.Id < b.Id)
-							return -1
-						return 0
-					})
-					clearTimeout(callbackTimer)
-					callbackTimer = setTimeout(fireCallbacks, 100)
-				})
+				updateContainer(server, containers[c].Id)
 			}
 
 		})
@@ -123,7 +134,36 @@ var Docker = (function(){
 
 	handleWebsocket = function(ext, server) {
 		e = JSON.parse(ext.data)
-		console.log(server, "Event status", e.Status)
+		console.log(e)
+		// container related
+		if (e.Status == "create") {
+			updateContainer(server, e.Id)
+		}
+		else if (e.Status == "destroy") {
+			s = findElementByAttribute(me.servers, "Id", server)
+			c = findElementByAttribute(me.servers[s].containers, "Id", e.Id)
+			me.servers[s].containers.splice(c,1)
+			clearTimeout(callbackTimer)
+			callbackTimer = setTimeout(fireCallbacks, 100)
+		}
+		else if (e.Status == "start") {
+			s = findElementByAttribute(me.servers, "Id", server)
+			c = findElementByAttribute(me.servers[s].containers, "Id", e.Id)
+			updateContainer(server,e.Id)
+		}
+		else if (e.Status == "die") {
+			s = findElementByAttribute(me.servers, "Id", server)
+			c = findElementByAttribute(me.servers[s].containers, "Id", e.Id)
+			updateContainer(server,e.Id)
+		}
+
+		// image related
+		else if (e.Status == "untag") {
+		}
+		// other?
+		else {
+			console.log(server, "Event status", e.Status)
+		}
 	}
 
 	newwebsocket = function(server){
@@ -138,6 +178,9 @@ var Docker = (function(){
 		}
 		websocket.onopen = function() {
 			console.log("Websocket connection open")
+		}
+		websocket.onerror = function() {
+			console.log("Websocket got an error")
 		}
 		return websocket
 	}
