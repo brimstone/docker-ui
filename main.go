@@ -33,8 +33,6 @@ func watchEvents(ws *websocket.Conn) {
 
 	for {
 		msg := <-context.channel
-
-		fmt.Println("Sending to client: ", msg)
 		err := websocket.Message.Send(ws, msg)
 		if err != nil {
 			fmt.Println("Can't send")
@@ -77,15 +75,15 @@ func main() {
 
 	proxy, _ := Proxy.New()
 
+	// Don't jerk around websocket connections
+	proxy.Handle("/proxyevents", "http://localhost:8079", false)
+
 	// Handle requests directed at a particular server
 	proxy.Handle("server=liani$", "unix:///var/run/docker.sock", true)
 	//proxy.Handle("server=liani$", "unix:///tmp/proxysocket.sock")
 
 	// Send docker looking like urls to our first socket
 	proxy.Handle("^/v[0-9]", "unix:///var/run/docker.sock", true)
-
-	// Don't jerk around websocket connections
-	proxy.Handle("/proxyevents", "http://localhost:8079", false)
 
 	// everything else goes to the asset server
 	proxy.Handle("/", "http://localhost:8079", true)
