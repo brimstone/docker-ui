@@ -15,7 +15,7 @@ type envelope struct {
 	channel chan string
 }
 
-func eventCallback(event *dockerclient.Event, args ...interface{}) {
+func eventCallback(event *dockerclient.Event, errors chan error, args ...interface{}) {
 	fmt.Printf("Received event: %#v\n", *event)
 	context := args[0].(*envelope)
 	msg, err := json.Marshal(event)
@@ -29,7 +29,7 @@ func watchEvents(ws *websocket.Conn) {
 
 	context := &envelope{make(chan string)}
 	docker, _ := dockerclient.NewDockerClient("unix:///var/run/docker.sock", nil)
-	go docker.StartMonitorEvents(eventCallback, context)
+	go docker.StartMonitorEvents(eventCallback, nil, context)
 
 	for {
 		msg := <-context.channel
