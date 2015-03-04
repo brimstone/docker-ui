@@ -33,6 +33,8 @@ var Docker = (function(){
 		.success(function(containers, xhr){
 			i = findElementByAttribute(me.servers, "Id", server)
 			me.servers[i].containers = []
+			// willing to bet there's a closure problem here
+			me.servers[i].websocket = newwebsocket(server)
 
 			for(c = 0; c < containers.length; c++) {
 				atomic.get("/containers/" + containers[c].Id + "/json?server=" + server)
@@ -119,8 +121,26 @@ var Docker = (function(){
 		})
 	}
 
-	//me.UpdateServerList()
-	setInterval(me.UpdateServerList, 2000)
+	handleWebsocket = function(ext, server) {
+		e = JSON.parse(ext.data)
+		console.log(server, "Event status", e.Status)
+	}
+
+	newwebsocket = function(server){
+		websocket = new WebSocket((location.protocol == "http:" ? "ws:" : "wss:") + "//" + location.host + "/proxyevents?server=" + server);
+		websocket.onmessage = function(ext) {
+			handleWebsocket(ext, server)
+		}
+		//websocket.onerror = newwebsocket
+		websocket.onclose = function() {
+			console.log("Websocket connection closed")
+			newwebsocket(server)
+		}
+		websocket.onopen = function() {
+			console.log("Websocket connection open")
+		}
+		return websocket
+	}
 
 	return me;
 }());
