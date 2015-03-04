@@ -134,7 +134,6 @@ var Docker = (function(){
 
 	handleWebsocket = function(ext, server) {
 		e = JSON.parse(ext.data)
-		console.log(e)
 		// container related
 		if (e.Status == "create") {
 			updateContainer(server, e.Id)
