@@ -11,6 +11,15 @@ import (
 	"net/http"
 )
 
+type server struct {
+	Id     string
+	Url    string
+	Info   *dockerclient.Info
+	Client *dockerclient.DockerClient
+}
+
+var servers []server
+
 type envelope struct {
 	channel chan string
 }
@@ -28,6 +37,7 @@ func eventCallback(event *dockerclient.Event, errors chan error, args ...interfa
 func watchEvents(ws *websocket.Conn) {
 
 	context := &envelope{make(chan string)}
+	// [todo] This needs to use the right client
 	docker, _ := dockerclient.NewDockerClient("unix:///var/run/docker.sock", nil)
 	go docker.StartMonitorEvents(eventCallback, nil, context)
 
@@ -53,14 +63,40 @@ func watchEvents(ws *websocket.Conn) {
 
 func handlerServers(w http.ResponseWriter, r *http.Request) {
 	w.Header().Add("Content-Type", "application/json")
-	servers := make([]map[string]string, 0)
-	//servers = append(servers, map[string]string{"Id": "noranti"})
-	servers = append(servers, map[string]string{"Id": "liani"})
-	out, _ := json.Marshal(servers)
+	s := make([]map[string]string, 0)
+	for i := 0; i < len(servers); i++ {
+		s = append(s, map[string]string{"Id": servers[i].Id})
+	}
+	out, _ := json.Marshal(s)
 	fmt.Fprint(w, string(out))
 }
 
+func addServer(u string) error {
+	s := server{Url: u}
+	var err error
+
+	s.Client, err = dockerclient.NewDockerClient(u, nil)
+	if err != nil {
+		return err
+	}
+
+	s.Info, err = s.Client.Info()
+	if err != nil {
+		return err
+	}
+
+	s.Id = s.Info.Name
+
+	servers = append(servers, s)
+
+	return nil
+}
+
 func main() {
+	servers = make([]server, 0)
+
+	// [todo] figure out cmd line params
+	addServer("unix:///var/run/docker.sock")
 
 	// setup asset handler
 	http.Handle("/",
@@ -79,7 +115,9 @@ func main() {
 	proxy.Handle("/proxyevents", "http://localhost:8079", false)
 
 	// Handle requests directed at a particular server
-	proxy.Handle("server=liani$", "unix:///var/run/docker.sock", true)
+	for i := 0; i < len(servers); i++ {
+		proxy.Handle("server="+servers[i].Id+"$", servers[i].Url, true)
+	}
 	//proxy.Handle("server=liani$", "unix:///tmp/proxysocket.sock")
 
 	// Send docker looking like urls to our first socket
