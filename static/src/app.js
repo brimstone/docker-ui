@@ -48,7 +48,7 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 			if ($routeParams.containerId == "new") {
 				console.log("Setting new container bits.")
 				found = true
-				$location.url("/")
+				$location.url("/" + $routeParams.serverId)
 			}
 			else {
 				for(s = 0; s < $scope.servers.length; s++) {
@@ -67,7 +67,7 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 				}
 			}
 			if (!found) {
-				$location.url("/")
+				$location.url("/" + $routeParams.serverId)
 			}
 		}
 		else if ($routeParams.serverId) {
