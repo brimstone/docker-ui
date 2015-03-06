@@ -6,10 +6,16 @@ import (
 	"github.com/brimstone/docker-ui/static"
 	Proxy "github.com/brimstone/go-proxy"
 	"github.com/elazarl/go-bindata-assetfs"
+	"github.com/grafov/bcast"
 	"net/http"
 )
 
+var group *bcast.Group
+
 func main() {
+	group = bcast.NewGroup()
+	go group.Broadcasting(0)
+
 	servers = make([]server, 0)
 
 	// [todo] figure out cmd line params

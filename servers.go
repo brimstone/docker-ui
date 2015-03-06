@@ -42,6 +42,8 @@ func addServer(u string) error {
 
 	s.Id = s.Info.Name
 
+	go s.Client.StartMonitorEvents(eventCallback, nil, s)
+
 	servers = append(servers, s)
 
 	return nil

@@ -56,8 +56,6 @@ var Docker = (function(){
 		.success(function(containers, xhr){
 			var i = findElementByAttribute(me.servers, "Id", server)
 			me.servers[i].containers = []
-			// willing to bet there's a closure problem here
-			me.servers[i].websocket = newwebsocket(server)
 
 			for(c = 0; c < containers.length; c++) {
 				updateContainer(server, containers[c].Id)
@@ -132,28 +130,26 @@ var Docker = (function(){
 		})
 	}
 
-	handleWebsocket = function(ext, server) {
+	handleWebsocket = function(ext) {
 		e = JSON.parse(ext.data)
 		// container related
+		s = findElementByAttribute(me.servers, "Id", e.Server)
 		if (e.Status == "create") {
-			updateContainer(server, e.Id)
+			updateContainer(e.Server, e.Id)
 		}
 		else if (e.Status == "destroy") {
-			s = findElementByAttribute(me.servers, "Id", server)
 			c = findElementByAttribute(me.servers[s].containers, "Id", e.Id)
 			me.servers[s].containers.splice(c,1)
 			clearTimeout(callbackTimer)
 			callbackTimer = setTimeout(fireCallbacks, 100)
 		}
 		else if (e.Status == "start") {
-			s = findElementByAttribute(me.servers, "Id", server)
 			c = findElementByAttribute(me.servers[s].containers, "Id", e.Id)
-			updateContainer(server,e.Id)
+			updateContainer(e.Server,e.Id)
 		}
 		else if (e.Status == "die") {
-			s = findElementByAttribute(me.servers, "Id", server)
 			c = findElementByAttribute(me.servers[s].containers, "Id", e.Id)
-			updateContainer(server,e.Id)
+			updateContainer(e.Server,e.Id)
 		}
 
 		// image related
@@ -161,19 +157,17 @@ var Docker = (function(){
 		}
 		// other?
 		else {
-			console.log(server, "Event status", e.Status)
+			console.log(e.Server, "Event status", e.Status)
 		}
 	}
 
-	newwebsocket = function(server){
-		websocket = new WebSocket((location.protocol == "http:" ? "ws:" : "wss:") + "//" + location.host + "/proxyevents?server=" + server);
-		websocket.onmessage = function(ext) {
-			handleWebsocket(ext, server)
-		}
+	newwebsocket = function(){
+		websocket = new WebSocket((location.protocol == "http:" ? "ws:" : "wss:") + "//" + location.host + "/proxyevents");
+		websocket.onmessage = handleWebsocket
 		//websocket.onerror = newwebsocket
 		websocket.onclose = function() {
 			console.log("Websocket connection closed")
-			newwebsocket(server)
+			newwebsocket()
 		}
 		websocket.onopen = function() {
 			console.log("Websocket connection open")
@@ -183,6 +177,8 @@ var Docker = (function(){
 		}
 		return websocket
 	}
+
+	newwebsocket()
 
 	return me;
 }());
