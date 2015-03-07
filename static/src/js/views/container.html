@@ -10,12 +10,31 @@
 						<input  class="form-control" id="containerName" placeholder="Name" ng-model="container.Name">
 						<label for="containerImage">Image</label>
 						<input class="form-control" id="containerImage" placeholder="Image" ng-model="containerImage">
+						<label for="containerCmd">Cmd</label>
+						<input class="form-control" id="containerCmd" placeholder="Cmd" ng-model="container.Config.Cmd">
 					</div>
 				</div>
 				<div class="col-xs-12 col-md-6 col-lg-4">
 					<div class="form-group">
 						<label for="containerIp">IP Address</label>
 						<input  class="form-control" id="containerIp" placeholder="Ip" ng-model="container.NetworkSettings.IPAddress" disabled>
+						<label for="containerHostname">Hostname</label>
+						<input  class="form-control" id="containerHostname" placeholder="Hostname" ng-model="container.Config.Hostname" disabled>
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-6 col-lg-4">
+					<div class="form-group">
+						Environment
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-6 col-lg-4">
+					<div class="form-group">
+						Volumes
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-6 col-lg-4">
+					<div class="form-group">
+						Links
 					</div>
 				</div>
 				<div class="col-xs-12 col-md-12 col-lg-12">
@@ -29,6 +48,7 @@
 						Restart
 					</button>
 					<button type="button" class="btn btn-danger" ng-click="deleteContainer()">Delete</button>
+					<button type="button" class="btn btn-danger" ng-click="reloadContainer()">Apply</button>
 				</div>
 			</form>
 		</div>

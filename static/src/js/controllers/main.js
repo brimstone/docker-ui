@@ -4,42 +4,23 @@ app.controller('Main', function ($scope, $routeParams, docker, $location, $rootS
 	$scope.container = {}
 
 	function findContainer() {
-		var found = false
-		// find our container object, if we have it
-		if ($routeParams.containerId) {
-			if ($routeParams.containerId == "new") {
-				console.log("Setting new container bits.")
-				found = true
-				$location.url("/" + $routeParams.serverId)
-			}
-			else {
-				for(s = 0; s < $scope.servers.length; s++) {
-					if ($scope.servers[s].Id != $routeParams.serverId) {
-						continue;
-					}
-					$scope.server = $scope.servers[s]
-					for(c = 0; c < $scope.servers[s].containers.length; c++) {
-						if ($scope.servers[s].containers[c].Id != $routeParams.containerId) {
-							continue;
-						}
-						$scope.container = $scope.servers[s].containers[c]
-						$scope.containerImage = findImageById($scope.servers[s].images, $scope.container.Image).RepoTags[0]
-						found = true
-					}
-				}
-			}
-			if (!found) {
-				$location.url("/" + $routeParams.serverId)
-			}
+		s = findElementByAttribute($scope.servers, "Id", $routeParams.serverId)
+		if (s == -1) {
+			$location.url("/")
+			return;
 		}
-		else if ($routeParams.serverId) {
-			for(s = 0; s < $scope.servers.length; s++) {
-				if ($scope.servers[s].Id != $routeParams.serverId) {
-					continue;
-				}
-				$scope.server = $scope.servers[s]
-			}
+		$scope.server = $scope.servers[s]
+
+		if (!$routeParams.containerId) {
+			return;
 		}
+
+		c = findElementByAttribute($scope.servers[s].containers, "Id", $routeParams.containerId)
+		if (c == -1) {
+			$location.url("/" + $routeParams.serverId)
+			return;
+		}
+		$scope.container = $scope.servers[s].containers[c]
 	}
 
 	function findImageById(images, image){
@@ -72,7 +53,4 @@ app.controller('Main', function ($scope, $routeParams, docker, $location, $rootS
 
 	$scope.$on('$destroy', myListener);
 
-
-	$scope.servers = docker.servers
-	findContainer()
 });

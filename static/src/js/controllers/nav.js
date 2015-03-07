@@ -17,7 +17,6 @@ app.controller('Nav', function ($scope, $routeParams, docker, $location, $rootSc
 		}
 
 		c = findElementByAttribute($scope.servers[s].containers, "Id", $routeParams.containerId)
-		console.log(c)
 		if (c == -1) {
 			$location.url("/" + $routeParams.serverId)
 			return;
@@ -51,7 +50,4 @@ app.controller('Nav', function ($scope, $routeParams, docker, $location, $rootSc
 
 	$scope.$on('$destroy', myListener);
 
-
-	//$scope.servers = docker.servers
-	//findContainer()
 });
