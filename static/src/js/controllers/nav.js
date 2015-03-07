@@ -1,5 +1,7 @@
 app.controller('Nav', function ($scope, $routeParams, docker, $location, $rootScope) {
 
+	$scope.server = null
+	$scope.container = null
     $scope.menuCollapsed = true;
 
 	function findContainer() {
@@ -35,6 +37,11 @@ app.controller('Nav', function ($scope, $routeParams, docker, $location, $rootSc
 		$scope.menuCollapsed = true;
 	}
 
+	$scope.selectHome = function(server) {
+		$scope.server = null
+		$scope.container = null
+		$scope.menuCollapsed = true;
+	}
 	// http://toddmotto.com/all-about-angulars-emit-broadcast-on-publish-subscribing/
 	var myListener = $rootScope.$on('containerUpdate', function (event, data) {
 		$scope.servers = docker.servers
