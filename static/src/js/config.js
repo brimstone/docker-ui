@@ -1,12 +1,12 @@
 app.config(['$routeProvider', function($routeProvider){
 	$routeProvider.when('/', {
-		templateUrl: 'main',
+		templateUrl: 'js/views/main.html',
 		controller: 'Main'
 	}).when('/:serverId', {
-		templateUrl: 'main',
+		templateUrl: 'js/views/main.html',
 		controller: 'Main'
 	}).when('/:serverId/:containerId', {
-		templateUrl: 'main',
+		templateUrl: 'js/views/main.html',
 		controller: 'Main'
 	}).otherwise({
 		redirectTo: '/'
