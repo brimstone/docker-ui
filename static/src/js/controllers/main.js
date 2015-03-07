@@ -1,41 +1,4 @@
-angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider){
-	delete $httpProvider.defaults.headers.common['X-Requested-With'];
-})
-.config(['$routeProvider', function($routeProvider){
-	$routeProvider.when('/', {
-		templateUrl: 'main',
-		controller: 'Main'
-	}).when('/:serverId', {
-		templateUrl: 'main',
-		controller: 'Main'
-	}).when('/:serverId/:containerId', {
-		templateUrl: 'main',
-		controller: 'Main'
-	}).otherwise({
-		redirectTo: '/'
-	})
-}])
-.service('docker', function($rootScope){
-	// http://clintberry.com/2013/angular-js-websocket-service/
-
-	var callbacks = []
-
-	me = this
-
-
-	var callback = function(){
-		me.servers = Docker.servers
-		$rootScope.$emit("containerUpdate", "emitted data")
-	}
-
-
-	Docker.subscribe(callback)
-
-	Docker.UpdateServerList()
-
-	this.servers = []
-})
-.controller('Main', function ($scope, $routeParams, docker, $location, $rootScope) {
+app.controller('Main', function ($scope, $routeParams, docker, $location, $rootScope) {
 
     $scope.menuCollapsed = true;
 	$scope.consoleAvailable = false;
@@ -113,7 +76,4 @@ angular.module('docker-ui', ['ui.bootstrap', 'ngRoute'], function($httpProvider)
 
 	$scope.servers = docker.servers
 	findContainer()
-})
-
-
-// angular.element($('#containerName')).scope().servers[1].containers
+});
