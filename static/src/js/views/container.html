@@ -1,0 +1,42 @@
+<tabset>
+	<tab heading="Config">
+		<div container="container-fluid">
+			<form>
+				<div class="col-xs-12 col-md-6 col-lg-4">
+					<div class="form-group">
+						<label for="containerId">Id</label>
+						<input  class="form-control" id="containerId" placeholder="Id" ng-model="container.Id" disabled>
+						<label for="containerName">Name</label>
+						<input  class="form-control" id="containerName" placeholder="Name" ng-model="container.Name">
+						<label for="containerImage">Image</label>
+						<input class="form-control" id="containerImage" placeholder="Image" ng-model="containerImage">
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-6 col-lg-4">
+					<div class="form-group">
+						<label for="containerIp">IP Address</label>
+						<input  class="form-control" id="containerIp" placeholder="Ip" ng-model="container.NetworkSettings.IPAddress" disabled>
+					</div>
+				</div>
+				<div class="col-xs-12 col-md-12 col-lg-12">
+					<button type="button" class="btn btn-success" ng-click="startContainer()" ng-disabled="container.State.Running">
+						Start
+					</button>
+					<button type="button" class="btn btn-danger" ng-click="stopContainer()" ng-disabled="!container.State.Running">
+						Stop
+					</button>
+					<button type="button" class="btn btn-danger" ng-disabled="!container.State.Running">
+						Restart
+					</button>
+					<button type="button" class="btn btn-danger" ng-click="deleteContainer()">Delete</button>
+				</div>
+			</form>
+		</div>
+	</tab>
+	<tab heading="Console" disabled="!consoleAvailable">
+		Console output goes here
+	</tab>
+	<!--tab ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
+		{{tab.content}}
+	</tab-->
+</tabset>

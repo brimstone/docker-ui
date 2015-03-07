@@ -14,13 +14,54 @@
 	<script src="js/config.js"></script>
 	<script src="js/services/docker.js"></script>
 	<script src="js/controllers/main.js"></script>
+	<script src="js/controllers/nav.js"></script>
 
 	<link href="vendor/bootstrap.min.css" rel="stylesheet"/>
 	<link href="index.css" rel="stylesheet"/>
 
 </head>
 
-<body class="ng-cloak" ng-view>
+<body>
+<div class="container-fluid" ng-controller="Nav">
+	<div class="col-md-2 sidebar">
+		<nav class="navbar navbar-default" role="navigation">
+			<div class="navbar-header">
+				<a class="navbar-brand" href="/">Docker UI</a>
+				<a class="visible-xs navbar-brand" ng-hide="!menuCollapsed">&raquo;</a>
+				<a class="visible-xs navbar-brand" ng-hide="!menuCollapsed" ng-click="selectServer(server)" href="#{{s.Id}}">{{server.Id}}</a>
+				<a class="visible-xs navbar-brand" ng-hide="!menuCollapsed || !container">&raquo;</a>
+				<a class="visible-xs navbar-brand" ng-hide="!menuCollapsed || !container">{{container.Name}}</a>
+				<button type="button" class="navbar-toggle" ng-click="menuCollapsed = !menuCollapsed">
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+					<span class="icon-bar"></span>
+				</button>
+			</div>
+
+			<div class="collapse navbar-collapse" collapse="menuCollapsed">
+				<input type="text" class="form-control" placeholder="Search">
+				<ul class="nav nav-stacked" ng-repeat="s in servers">
+					<li ng-class="{active: s.Id == server.Id}">
+						<a href="#{{s.Id}}" ng-click="selectServer(s)">{{s.Id}}</a>
+					</li>
+					<li>
+						<ul class="nav nav-stacked sub-menu">
+							<li>
+								<a href="#{{s.Id}}/new">New...</a>
+							</li>
+							<li ng-repeat="c in s.containers" ng-class="{active: c.Id == container.Id}">
+								<a href="#{{s.Id}}/{{c.Id}}" ng-click="selectContainer(s, c)">{{c.Name}}</a>
+							</li>
+						</ul>
+					</li>
+				</ul>
+			</div><!-- /.navbar-collapse -->
+		</nav>
+
+	</div><!--/end left column-->
+	<div class="ng-cloak col-md-10" ng-view>
+	</div>
+</div>
 
 </body>
 <html>

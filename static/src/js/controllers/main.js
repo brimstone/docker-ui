@@ -1,6 +1,5 @@
 app.controller('Main', function ($scope, $routeParams, docker, $location, $rootScope) {
 
-    $scope.menuCollapsed = true;
 	$scope.consoleAvailable = false;
 	$scope.container = {}
 
