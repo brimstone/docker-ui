@@ -6,11 +6,13 @@ app.controller('Container', function ($scope, $routeParams, docker, $location, $
 	function findContainer() {
 		s = findElementByAttribute($scope.servers, "Id", $routeParams.serverId)
 		if (s == -1) {
+			// [todo] - Actually, if our server doesn't exist, what are we doing here?
 			return;
 		}
 		$scope.server = $scope.servers[s]
 
 		if (!$routeParams.containerId) {
+			// [todo] - Actually, if our containerId doesn't exist, what are we doing here?
 			return;
 		}
 
@@ -45,6 +47,17 @@ app.controller('Container', function ($scope, $routeParams, docker, $location, $
 		Docker.StartContainer($scope.server.Id, $scope.container.Id)
 	}
 
+	$scope.reloadContainer = function (){
+		container = $scope.container.Config
+		container.HostConfig = $scope.container.HostConfig
+		Docker.DeleteContainer($scope.server.Id, $scope.container.Id)
+		.success(function(){
+			Docker.CreateContainer($scope.server.Id, $scope.container.Name, container, function(data){
+				$location.url("/" + $routeParams.serverId + "/" + data.Id)
+			})
+		})
+	}
+
 	$scope.addEnv = function(){
 		$scope.container.Config.Env.push('')
 	}
@@ -63,6 +76,8 @@ app.controller('Container', function ($scope, $routeParams, docker, $location, $
 	}
 	// http://toddmotto.com/all-about-angulars-emit-broadcast-on-publish-subscribing/
 	var handleContainerUpdate = $rootScope.$on('containerUpdate', function (event, data) {
+		event.preventDefault();
+		console.log("containerUpdate", event, data)
 		updateScope()
 		$scope.$apply()
 	});

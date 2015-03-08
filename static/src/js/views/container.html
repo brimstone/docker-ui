@@ -19,7 +19,7 @@
 						<label for="containerIp">IP Address</label>
 						<input class="form-control" id="containerIp" placeholder="Ip" ng-model="container.NetworkSettings.IPAddress" disabled>
 						<label for="containerHostname">Hostname</label>
-						<input class="form-control" id="containerHostname" placeholder="Hostname" ng-model="container.Config.Hostname" disabled>
+						<input class="form-control" id="containerHostname" placeholder="Hostname" ng-model="container.Config.Hostname">
 					</div>
 				</div>
 				<div class="col-xs-12 col-md-6 col-lg-4">
@@ -53,7 +53,7 @@
 						Restart
 					</button>
 					<button type="button" class="btn btn-danger" ng-click="deleteContainer()">Delete</button>
-					<button type="button" class="btn btn-danger" ng-click="reloadContainer()">Apply</button>
+					<button type="button" class="btn btn-danger" ng-click="reloadContainer()">Reload</button>
 				</div>
 			</form>
 		</div>
@@ -65,6 +65,6 @@
 		{{tab.content}}
 	</tab-->
 	<tab heading="Debug">
-		<div>{{container}}</div>
+		<pre>{{container}}</pre>
 	</tab>
 </tabset>

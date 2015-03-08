@@ -8,6 +8,7 @@ app.service('docker', function($rootScope){
 
 	var callback = function(){
 		me.servers = Docker.servers
+		console.log("signalling rootscope")
 		$rootScope.$emit("containerUpdate", "emitted data")
 	}
 
