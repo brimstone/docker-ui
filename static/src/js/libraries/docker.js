@@ -49,14 +49,19 @@ var Docker = (function(){
 			else {
 				me.servers[s].containers[c] = data
 			}
-			setInterval((function(s, c){
+/*
+			// This isn't coded right
+			// It should only refresh the requested container
+			// perhaps there's a different pub/sub for log updates?
+			setInterval(function(){(function(s, c){
 				atomic.get("/v1.17/containers/" + me.servers[s].containers[c].Id + "/logs?stderr=1&stdout=1&tail=1000")
 				.success(function(data, xhr){
 					me.servers[s].containers[c].logs = data
 					clearTimeout(callbackTimer)
 					callbackTimer = setTimeout(fireCallbacks, 100)
 				})
-			})(s, c), 1000)
+			})(s, c)}, 10000)
+*/
 			clearTimeout(callbackTimer)
 			callbackTimer = setTimeout(fireCallbacks, 100)
 		})
