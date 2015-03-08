@@ -25,10 +25,10 @@
 				<div class="col-xs-12 col-md-6 col-lg-4">
 					<div class="form-group">
 						<label>Environment</label>
-						<small><a ng-click="container.Config.Env.push('')">Add</a></small>
+						<small><a ng-click="addEnv()">Add</a></small>
 						<div class="input-group" ng-repeat="e in container.Config.Env">
 							<input type="text" class="form-control" placeholder="key=value" ng-model="container.Config.Env[$index]">
-							<span class="input-group-addon glyphicon glyphicon-remove" id="basic-addon1"></span>
+							<span class="input-group-addon glyphicon glyphicon-remove" id="basic-addon1" ng-click="removeEnv($index)"></span>
 						</div>
 					</div>
 				</div>

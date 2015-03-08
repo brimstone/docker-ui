@@ -45,6 +45,14 @@ app.controller('Container', function ($scope, $routeParams, docker, $location, $
 		Docker.StartContainer($scope.server.Id, $scope.container.Id)
 	}
 
+	$scope.addEnv = function(){
+		$scope.container.Config.Env.push('')
+	}
+
+	$scope.removeEnv = function(i) {
+		$scope.container.Config.Env.splice(i, 1)
+	}
+
 	updateScope = function() {
 		if (docker.servers.length == 0) {
 			return;
