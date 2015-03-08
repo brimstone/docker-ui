@@ -44,10 +44,19 @@ var Docker = (function(){
 						return -1
 					return 0
 				})
+				c = me.servers[s].containers.length - 1
 			}
 			else {
 				me.servers[s].containers[c] = data
 			}
+			setInterval((function(s, c){
+				atomic.get("/v1.17/containers/" + me.servers[s].containers[c].Id + "/logs?stderr=1&stdout=1&tail=1000")
+				.success(function(data, xhr){
+					me.servers[s].containers[c].logs = data
+					clearTimeout(callbackTimer)
+					callbackTimer = setTimeout(fireCallbacks, 100)
+				})
+			})(s, c), 1000)
 			clearTimeout(callbackTimer)
 			callbackTimer = setTimeout(fireCallbacks, 100)
 		})

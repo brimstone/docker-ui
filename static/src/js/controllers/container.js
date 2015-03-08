@@ -19,6 +19,9 @@ app.controller('Container', function ($scope, $routeParams, docker, $location, $
 			return;
 		}
 		$scope.container = $scope.servers[s].containers[c]
+		if ($scope.container.logs) {
+			$scope.consoleAvailable = true;
+		}
 	}
 
 	function findImageById(images, image){
