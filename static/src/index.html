@@ -42,7 +42,7 @@
 			<div class="collapse navbar-collapse" collapse="menuCollapsed">
 				<input type="text" class="form-control" placeholder="Search">
 				<ul class="nav nav-stacked" ng-repeat="s in servers">
-					<li ng-class="{active: s.Id == server.Id && container == {}}">
+					<li ng-class="{active: s.Id == server.Id && !container}">
 						<a href="#{{s.Id}}" ng-click="selectServer(s)">{{s.Id}}</a>
 					</li>
 					<li>
