@@ -5,9 +5,9 @@
 				<div class="col-xs-12 col-md-6 col-lg-4">
 					<div class="form-group">
 						<label for="containerId">Id</label>
-						<input  class="form-control" id="containerId" placeholder="Id" ng-model="container.Id" disabled>
+						<input class="form-control" id="containerId" placeholder="Id" ng-model="container.Id" disabled>
 						<label for="containerName">Name</label>
-						<input  class="form-control" id="containerName" placeholder="Name" ng-model="container.Name">
+						<input class="form-control" id="containerName" placeholder="Name" ng-model="container.Name">
 						<label for="containerImage">Image</label>
 						<input class="form-control" id="containerImage" placeholder="Image" ng-model="containerImage">
 						<label for="containerCmd">Cmd</label>
@@ -17,24 +17,29 @@
 				<div class="col-xs-12 col-md-6 col-lg-4">
 					<div class="form-group">
 						<label for="containerIp">IP Address</label>
-						<input  class="form-control" id="containerIp" placeholder="Ip" ng-model="container.NetworkSettings.IPAddress" disabled>
+						<input class="form-control" id="containerIp" placeholder="Ip" ng-model="container.NetworkSettings.IPAddress" disabled>
 						<label for="containerHostname">Hostname</label>
-						<input  class="form-control" id="containerHostname" placeholder="Hostname" ng-model="container.Config.Hostname" disabled>
+						<input class="form-control" id="containerHostname" placeholder="Hostname" ng-model="container.Config.Hostname" disabled>
 					</div>
 				</div>
 				<div class="col-xs-12 col-md-6 col-lg-4">
 					<div class="form-group">
-						Environment
+						<label>Environment</label>
+						<small><a ng-click="container.Config.Env.push('')">Add</a></small>
+						<div class="input-group" ng-repeat="e in container.Config.Env">
+							<input type="text" class="form-control" placeholder="key=value" ng-model="container.Config.Env[$index]">
+							<span class="input-group-addon glyphicon glyphicon-remove" id="basic-addon1"></span>
+						</div>
 					</div>
 				</div>
 				<div class="col-xs-12 col-md-6 col-lg-4">
 					<div class="form-group">
-						Volumes
+						<label>Volumes</label>
 					</div>
 				</div>
 				<div class="col-xs-12 col-md-6 col-lg-4">
 					<div class="form-group">
-						Links
+						<label>Links</label>
 					</div>
 				</div>
 				<div class="col-xs-12 col-md-12 col-lg-12">
@@ -59,4 +64,7 @@
 	<!--tab ng-repeat="tab in tabs" heading="{{tab.title}}" active="tab.active" disabled="tab.disabled">
 		{{tab.content}}
 	</tab-->
+	<tab heading="Debug">
+		<div>{{container}}</div>
+	</tab>
 </tabset>
