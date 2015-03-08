@@ -164,7 +164,6 @@ var Docker = (function(){
 	newwebsocket = function(){
 		websocket = new WebSocket((location.protocol == "http:" ? "ws:" : "wss:") + "//" + location.host + "/proxyevents");
 		websocket.onmessage = handleWebsocket
-		//websocket.onerror = newwebsocket
 		websocket.onclose = function() {
 			console.log("Websocket connection closed")
 			newwebsocket()
