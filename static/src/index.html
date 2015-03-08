@@ -13,6 +13,8 @@
 	<script src="js/app.js"></script>
 	<script src="js/config.js"></script>
 	<script src="js/services/docker.js"></script>
+	<script src="js/controllers/container.js"></script>
+	<script src="js/controllers/server.js"></script>
 	<script src="js/controllers/main.js"></script>
 	<script src="js/controllers/nav.js"></script>
 
@@ -40,7 +42,7 @@
 			<div class="collapse navbar-collapse" collapse="menuCollapsed">
 				<input type="text" class="form-control" placeholder="Search">
 				<ul class="nav nav-stacked" ng-repeat="s in servers">
-					<li ng-class="{active: s.Id == server.Id}">
+					<li ng-class="{active: s.Id == server.Id && container == {}}">
 						<a href="#{{s.Id}}" ng-click="selectServer(s)">{{s.Id}}</a>
 					</li>
 					<li>

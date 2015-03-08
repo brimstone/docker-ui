@@ -4,10 +4,10 @@ app.config(['$routeProvider', function($routeProvider){
 		controller: 'Main'
 	}).when('/:serverId', {
 		templateUrl: 'js/views/server.html',
-		controller: 'Main'
+		controller: 'Server'
 	}).when('/:serverId/:containerId', {
 		templateUrl: 'js/views/container.html',
-		controller: 'Main'
+		controller: 'Container'
 	}).otherwise({
 		redirectTo: '/'
 	})
